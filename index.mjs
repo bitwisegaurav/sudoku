@@ -1,3 +1,4 @@
+import sudokuGrid from "./sudoku.mjs";
 const sudoku = document.getElementById('sudoku');
 const test = document.getElementById('test');
 const tds = document.querySelectorAll('td');
@@ -7,7 +8,7 @@ const remain = document.querySelectorAll('.remain');
 const reset = document.getElementById('reset');
 const timer = document.getElementById('timer');
 let selectedValue = 0, time = 0, flag = false;
-let puzzle = [
+let defaultPuzzle = [
     [5, 3, 0, 0, 7, 0, 0, 0, 0],
     [6, 0, 0, 1, 9, 5, 0, 0, 0],
     [0, 9, 8, 0, 0, 0, 0, 6, 0],
@@ -27,6 +28,7 @@ let puzzle = [
     // [2, 8, 7, 4, 1, 9, 6, 3, 5],
     // [3, 4, 5, 2, 8, 6, 1, 7, 9]
 ];
+let puzzle = [];
 let count = [9,9,9,9,9,9,9,9,9];
 
 // function sudokuGenerator(){
@@ -71,7 +73,28 @@ let count = [9,9,9,9,9,9,9,9,9];
 
 // sudokuGenerator();
 
-getData();
+// 
+
+// 
+
+getSudoku();
+
+// function to replace random elements with 0 from sudokuGrid
+function getSudoku(){
+    let noOfFilledCells = Math.floor(Math.random() * 50) + 20;
+    let count = 0;
+    while(count < noOfFilledCells){
+        let randomRow = Math.floor(Math.random() * 9);
+        let randomCol = Math.floor(Math.random() * 9);
+        if(sudokuGrid[randomRow][randomCol] !== 0){
+            sudokuGrid[randomRow][randomCol] = 0;
+            count++;
+        }
+    }
+    puzzle = sudokuGrid;
+
+    getData();
+}
 
 function checkCorrectness(row, col, value){
     if(!puzzle[row][col])
@@ -120,6 +143,9 @@ function checkCol(row, col, value) {
 }
 
 function getData() {
+    if(puzzle.length === 0)
+        puzzle = defaultPuzzle;
+
     for (let i = 0; i < 9; i++) {
         for (let j = 0; j < 9; j++) {
             tds[i * 9 + j].setAttribute('value', i * 9 + j);
