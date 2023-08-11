@@ -157,7 +157,10 @@ function getData() {
         }
     }
     for (let i = 0; i < 9; i++) {
-        remain[i].innerHTML = count[i];
+        if(count[i] == 0)
+            remain[i].innerHTML = '';
+        else
+            remain[i].innerHTML = count[i];
     }
 }
 
