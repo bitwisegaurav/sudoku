@@ -7,7 +7,7 @@ const btns = document.querySelectorAll('button');
 const remain = document.querySelectorAll('.remain');
 const reset = document.getElementById('reset');
 const timer = document.getElementById('timer');
-let selectedValue = 0, time = 0, flag = false;
+let selectedValue = 0, time = 0, flag = false, won = false;
 let defaultPuzzle = [
     [5, 3, 0, 0, 7, 0, 0, 0, 0],
     [6, 0, 0, 1, 9, 5, 0, 0, 0],
@@ -28,6 +28,7 @@ let defaultPuzzle = [
     // [2, 8, 7, 4, 1, 9, 6, 3, 5],
     // [3, 4, 5, 2, 8, 6, 1, 7, 9]
 ];
+let solution = sudokuGrid;
 let puzzle = [];
 let count = [9,9,9,9,9,9,9,9,9];
 
@@ -188,13 +189,13 @@ Array.from(tds).forEach((td) => {
             let row = Math.floor(index / 9);
             let col = index % 9;
             puzzle[row][col] = selectedValue;
-            if(flag == false) {
+            if(flag === false && won === false) {
                 flag = true;
                 startTimer();
             }
         }
         else if(td.innerText != '' && td.classList.contains('fixed') == true){
-            if(flag == false) {
+            if(flag === false && won === false) {
                 flag = true;
                 startTimer();
             }
@@ -210,7 +211,7 @@ Array.from(tds).forEach((td) => {
             }
         }
         else if(td.innerText != '' && td.classList.contains('fixed') == false){
-            if(flag == false) {
+            if(flag === false && won === false) {
                 flag = true;
                 startTimer();
             }
@@ -258,7 +259,8 @@ Array.from(tds).forEach((td) => {
         }
         if(checkPuzzle()){
             flag = false;
-            timer.innerHTML = 'You Won!';
+            won = true;
+            timer.innerHTML = 'You Won! in ' + timer.innerHTML;
         }
     });
 });
@@ -315,7 +317,7 @@ function startTimer() {
     if(sec < 10) {
         sec = '0' + sec;
     }
-    if(flag) {
+    if(flag && !won) {
         if(min > 0)
             timer.innerHTML = `${min}m ${sec}s`;
         else
