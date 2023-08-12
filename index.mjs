@@ -205,7 +205,7 @@ Array.from(tds).forEach((td) => {
             }
             else {
                 selectedValue = 0;
-                console.log(selectedValue);
+                // console.log(selectedValue);
                 findNumbers();
             }
         }
@@ -252,7 +252,7 @@ Array.from(tds).forEach((td) => {
                     puzzle[row][col] = 0;
                     td.innerText = '';
                 }
-                console.log(selectedValue);
+                // console.log(selectedValue);
                 findNumbers();
             }
         }
@@ -271,7 +271,7 @@ Array.from(btns).forEach((btn) => {
         }
         let value = btn.getAttribute('value');
         value = parseInt(value);
-        console.log(selectedValue, value);
+        // console.log(selectedValue, value);
         if(value != selectedValue) {
             selectedValue = value;
             let clickedElements = document.getElementsByClassName('clicked');

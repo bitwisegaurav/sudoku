@@ -56,9 +56,9 @@ function shuffleArray(array) {
 const sudokuGrid = generateSudoku();
 // console.log(sudokuGrid);
 
-sudokuGrid.forEach(row => {console.log(row.join(' '));});
+// sudokuGrid.forEach(row => {console.log(row.join(' '));});
 
-console.log(checksudokuGrid());
+// console.log(checksudokuGrid());
 
 function checksudokuGrid(){
     for (let row = 0; row < 9; row++) {
