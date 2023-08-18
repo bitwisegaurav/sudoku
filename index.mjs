@@ -39,11 +39,13 @@ getSudoku();
 
 // function to replace random elements with 0 from sudokuGrid
 function getSudoku(){
-    let noOfFilledCells = Math.floor(Math.random() * 50) + 20;
+    let min = 30;
+    let max = 50;
+    let noOfUnfilledCells = Math.floor(Math.random() * max) + min;
     let count = 0;
     if(sudokuGrid && sudokuGrid.length > 0){
         solution = sudokuGrid;
-        while(count < noOfFilledCells){
+        while(count < noOfUnfilledCells){
             let randomRow = Math.floor(Math.random() * 9);
             let randomCol = Math.floor(Math.random() * 9);
             if(sudokuGrid[randomRow][randomCol] !== 0){
@@ -377,7 +379,6 @@ function resetRemain(){
     }
 }
 
-// on clicking the reset button the puzzle will be reset
 reset.addEventListener('click', () => {
     validate = false, selectedValue = 0, time = 0, flag = false, won = false;
     count = [9,9,9,9,9,9,9,9,9];
@@ -431,13 +432,10 @@ validatebtn.addEventListener('click', () => {
     validate = !validate;
 });
 
-// 6 7 6 7 6 4
-// 6 4 5
-
 // function to generate a sudoku puzzle
 // function sudokuGenerator(){
 //     // no of filled cells in the puzzle between 10 to 60
-//     let noOfFilledCells = Math.floor(Math.random() * 40) + 30;
+//     let noOfUnfilledCells = Math.floor(Math.random() * 40) + 30;
 //     for(let i = 0; i < 9; i++){
 //         let row = [];
 //         for(let j = 0; j < 9; j++){
@@ -447,7 +445,7 @@ validatebtn.addEventListener('click', () => {
 //     }
     
 //     // put randomly digits in the puzzle at random positions
-//     for(let i = 0; i < noOfFilledCells; i++){
+//     for(let i = 0; i < noOfUnfilledCells; i++){
 //         let randomRow = Math.floor(Math.random() * 9);
 //         let randomCol = Math.floor(Math.random() * 9);
 
