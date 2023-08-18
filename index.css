@@ -88,6 +88,21 @@ tr:not(:nth-child(9n)):nth-child(3n) td {
     mix-blend-mode: multiply;
 }
 
+.wrong{
+    position: relative;
+}
+.wrong::after{
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    height: 70%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background-color: rgba(255, 91, 91, 0.462);
+    mix-blend-mode: multiply;
+}
 
 #bottom{
     display: flex;
@@ -102,7 +117,7 @@ tr:not(:nth-child(9n)):nth-child(3n) td {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: calc(80% - 20px);
+    width: calc(90% - 20px);
     gap: 10px;
     flex-wrap: wrap;
     /* border: 2px solid #3498db; */
@@ -142,7 +157,7 @@ button:hover {
     padding: 0;
 }
 
-#reset {
+#reset, #next, #validate{
     position: relative;
     padding: 0;
     width: 60px;
@@ -161,6 +176,10 @@ button:hover {
     border-radius: 4px;
     background-color: rgba(0, 0, 0, 0.288);
     mix-blend-mode: multiply;
+}
+
+#validate{
+    font-size: 1.8rem;
 }
 
 #timer{

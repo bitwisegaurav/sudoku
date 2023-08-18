@@ -1,12 +1,14 @@
 import sudokuGrid from "./sudoku.mjs";
 const sudoku = document.getElementById('sudoku');
-const test = document.getElementById('test');
 const tds = document.querySelectorAll('td');
 const trs = sudoku.getElementsByTagName('tr');
 const btns = document.querySelectorAll('button');
 const remain = document.querySelectorAll('.remain');
 const reset = document.getElementById('reset');
+const validatebtn = document.getElementById('validate');
+const nextbtn = document.getElementById('next');
 const timer = document.getElementById('timer');
+let validate = false;
 let selectedValue = 0, time = 0, flag = false, won = false;
 let defaultPuzzle = [
     [5, 3, 0, 0, 7, 0, 0, 0, 0],
@@ -18,65 +20,20 @@ let defaultPuzzle = [
     [0, 6, 0, 0, 0, 0, 2, 8, 0],
     [0, 0, 0, 4, 1, 9, 0, 0, 5],
     [0, 0, 0, 0, 8, 0, 0, 7, 9]
-    // [5, 3, 4, 6, 7, 8, 9, 1, 2],
-    // [6, 7, 2, 1, 9, 5, 3, 4, 8],
-    // [1, 9, 8, 3, 4, 2, 5, 6, 7],
-    // [8, 5, 9, 7, 6, 1, 4, 2, 3],
-    // [4, 2, 6, 8, 0, 3, 7, 9, 1],
-    // [7, 1, 3, 9, 2, 4, 8, 5, 6],
-    // [9, 6, 1, 5, 3, 7, 2, 8, 4],
-    // [2, 8, 7, 4, 1, 9, 6, 3, 5],
-    // [3, 4, 5, 2, 8, 6, 1, 7, 9]
 ];
-let solution = sudokuGrid;
+let solution = [
+    [5, 3, 4, 6, 7, 8, 9, 1, 2],
+    [6, 7, 2, 1, 9, 5, 3, 4, 8],
+    [1, 9, 8, 3, 4, 2, 5, 6, 7],
+    [8, 5, 9, 7, 6, 1, 4, 2, 3],
+    [4, 2, 6, 8, 5, 3, 7, 9, 1],
+    [7, 1, 3, 9, 2, 4, 8, 5, 6],
+    [9, 6, 1, 5, 3, 7, 2, 8, 4],
+    [2, 8, 7, 4, 1, 9, 6, 3, 5],
+    [3, 4, 5, 2, 8, 6, 1, 7, 9]
+];
 let puzzle = [];
 let count = [9,9,9,9,9,9,9,9,9];
-
-// function sudokuGenerator(){
-//     // no of filled cells in the puzzle between 10 to 60
-//     let noOfFilledCells = Math.floor(Math.random() * 40) + 30;
-//     for(let i = 0; i < 9; i++){
-//         let row = [];
-//         for(let j = 0; j < 9; j++){
-//             row.push(0);
-//         }
-//         puzzle.push(row);
-//     }
-    
-//     // put randomly digits in the puzzle at random positions
-//     for(let i = 0; i < noOfFilledCells; i++){
-//         let randomRow = Math.floor(Math.random() * 9);
-//         let randomCol = Math.floor(Math.random() * 9);
-
-//         while(puzzle[randomRow][randomCol] !== 0){
-//             randomRow = Math.floor(Math.random() * 9);
-//             randomCol = Math.floor(Math.random() * 9);
-//         }
-
-//         let randomDigit = Math.floor(Math.random() * 9) + 1;
-        
-//         for(let j = 1; j < 9; j++){
-//             if(checkCorrectness(randomRow, randomCol, j)){
-//                 randomDigit = j;
-//                 break;
-//             }
-//         }
-        
-//         // while(!checkCorrectness(randomRow, randomCol, randomDigit)){
-//         //     randomDigit = Math.floor(Math.random() * 9) + 1;
-//         // }
-//         puzzle[randomRow][randomCol] = randomDigit;
-//     }    
-//     getData();
-
-//     puzzle.forEach(row => console.log(row.join(' ')));
-// }
-
-// sudokuGenerator();
-
-// 
-
-// 
 
 getSudoku();
 
@@ -92,7 +49,8 @@ function getSudoku(){
             count++;
         }
     }
-    puzzle = sudokuGrid;
+    // puzzle = sudokuGrid;
+    // solution = sudokuGrid;
 
     getData();
 }
@@ -155,6 +113,10 @@ function getData() {
                 tds[i * 9 + j].classList.add('fixed');
                 count[puzzle[i][j] - 1]--;
             }
+            else{
+                tds[i * 9 + j].innerHTML = '';
+                tds[i * 9 + j].classList.remove('fixed');
+            }
         }
     }
     for (let i = 0; i < 9; i++) {
@@ -167,12 +129,16 @@ function getData() {
 
 Array.from(tds).forEach((td) => {
     td.addEventListener('click', () => {
+        validate = false;
+        tds.forEach((td) => {
+            td.classList.remove('wrong');
+        });
         let value = td.innerText;
         value = parseInt(value);
         // console.log(selectedValue, value);
         // console.log(btns);
         // console.log(typeof(selectedValue), typeof(value));
-        if(td.innerText == '' && selectedValue != 0) {
+        if(td.innerText == '' && selectedValue != 0 && count[selectedValue - 1] > 0) {
             let index = td.getAttribute('value');
             td.innerText = selectedValue;
             if(count[selectedValue - 1] > 0) {
@@ -194,7 +160,7 @@ Array.from(tds).forEach((td) => {
                 startTimer();
             }
         }
-        else if(td.innerText != '' && td.classList.contains('fixed') == true){
+        else if(td.innerText != '' && td.classList.contains('fixed')){
             if(flag === false && won === false) {
                 flag = true;
                 startTimer();
@@ -215,7 +181,7 @@ Array.from(tds).forEach((td) => {
                 flag = true;
                 startTimer();
             }
-            if(value != selectedValue && selectedValue != 0) {
+            if(value != selectedValue && selectedValue != 0 && count[selectedValue - 1] > 0) {
                 let index = td.getAttribute('value');
                 index = parseInt(index);
                 let row = Math.floor(index / 9);
@@ -267,6 +233,10 @@ Array.from(tds).forEach((td) => {
 
 Array.from(btns).forEach((btn) => {
     btn.addEventListener('click', () => {
+        validate = false;
+        tds.forEach((td) => {
+            td.classList.remove('wrong');
+        });
         if(flag == false) {
             flag = true;
             startTimer();
@@ -357,7 +327,112 @@ function checkPuzzle() {
     return correct;
 }
 
+function countNumbers(){
+    for(let i = 0; i < 9; i++){
+        for(let j = 0; j < 9; j++){
+            if(puzzle[i][j] != 0){
+                count[puzzle[i][j] - 1]--;
+            }
+        }
+    }
+}
+
 // on clicking the reset button the puzzle will be reset
 reset.addEventListener('click', () => {
+    validate = false, selectedValue = 0, time = 0, flag = false, won = false;
+    count = [9,9,9,9,9,9,9,9,9];
+    timer.innerHTML = '0s';
+    puzzle = [];
+    tds.forEach((td) => {
+        td.innerText = '';
+        td.classList.remove('fixed');
+    });
+    // puzzle = sudokuGrid;
+    // solution = sudokuGrid;
+    getData();
+    console.log(puzzle)
+    countNumbers();
+    tds.forEach((td) => {
+        td.classList.remove('wrong');
+        td.classList.remove('blue');
+    });
+});
+
+nextbtn.addEventListener('click', () => {
     location.reload();
 });
+
+// check which tds having wrong values
+validatebtn.addEventListener('click', () => {
+    if(!validate) {
+        tds.forEach((td) => {
+            if(td.classList.contains('fixed') == false){
+                let index = td.getAttribute('value');
+                index = parseInt(index);
+                let row = Math.floor(index / 9);
+                let col = index % 9;
+                let value = parseInt(td.innerText);
+                // if(value)
+                //     td.innerText = solution[row][col];
+                if(value && value != solution[row][col]) {
+                    td.classList.add('wrong');
+                }
+                else {
+                    td.classList.remove('wrong');
+                }
+            }
+        });
+    }
+    else {
+        tds.forEach((td) => {
+            td.classList.remove('wrong');
+        });
+    }
+    validate = !validate;
+});
+
+// 6 7 6 7 6 4
+// 6 4 5
+
+// function to generate a sudoku puzzle
+// function sudokuGenerator(){
+//     // no of filled cells in the puzzle between 10 to 60
+//     let noOfFilledCells = Math.floor(Math.random() * 40) + 30;
+//     for(let i = 0; i < 9; i++){
+//         let row = [];
+//         for(let j = 0; j < 9; j++){
+//             row.push(0);
+//         }
+//         puzzle.push(row);
+//     }
+    
+//     // put randomly digits in the puzzle at random positions
+//     for(let i = 0; i < noOfFilledCells; i++){
+//         let randomRow = Math.floor(Math.random() * 9);
+//         let randomCol = Math.floor(Math.random() * 9);
+
+//         while(puzzle[randomRow][randomCol] !== 0){
+//             randomRow = Math.floor(Math.random() * 9);
+//             randomCol = Math.floor(Math.random() * 9);
+//         }
+
+//         let randomDigit = Math.floor(Math.random() * 9) + 1;
+        
+//         for(let j = 1; j < 9; j++){
+//             if(checkCorrectness(randomRow, randomCol, j)){
+//                 randomDigit = j;
+//                 break;
+//             }
+//         }
+        
+//         // while(!checkCorrectness(randomRow, randomCol, randomDigit)){
+//         //     randomDigit = Math.floor(Math.random() * 9) + 1;
+//         // }
+//         puzzle[randomRow][randomCol] = randomDigit;
+//     }    
+//     getData();
+
+//     puzzle.forEach(row => console.log(row.join(' ')));
+// }
+
+// sudokuGenerator();
