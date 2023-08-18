@@ -10,6 +10,7 @@ const nextbtn = document.getElementById('next');
 const timer = document.getElementById('timer');
 let validate = false;
 let selectedValue = 0, time = 0, flag = false, won = false;
+let min = 40, max = 50;
 let defaultPuzzle = [
     [5, 3, 0, 0, 7, 0, 0, 0, 0],
     [6, 0, 0, 1, 9, 5, 0, 0, 0],
@@ -34,26 +35,26 @@ let solution = [
 ];
 let puzzle = [];
 let count = [9,9,9,9,9,9,9,9,9];
-
+// console.table(sudokuGrid);
 getSudoku();
 
 // function to replace random elements with 0 from sudokuGrid
 function getSudoku(){
-    let min = 30;
-    let max = 50;
-    let noOfUnfilledCells = Math.floor(Math.random() * max) + min;
+    solution = JSON.parse(JSON.stringify(sudokuGrid));;
+   
+    let noOfUnfilledCells = Math.floor(Math.random() * (max - min + 1)) + min;
     let count = 0;
     if(sudokuGrid && sudokuGrid.length > 0){
-        solution = sudokuGrid;
+        puzzle = JSON.parse(JSON.stringify(sudokuGrid));
         while(count < noOfUnfilledCells){
             let randomRow = Math.floor(Math.random() * 9);
             let randomCol = Math.floor(Math.random() * 9);
-            if(sudokuGrid[randomRow][randomCol] !== 0){
-                sudokuGrid[randomRow][randomCol] = 0;
+            if(puzzle[randomRow][randomCol] !== 0){
+                puzzle[randomRow][randomCol] = 0;
                 count++;
             }
         }
-        puzzle = sudokuGrid;
+        // puzzle = sudokuGrid;
     }
 
     getData();
@@ -383,19 +384,18 @@ reset.addEventListener('click', () => {
     validate = false, selectedValue = 0, time = 0, flag = false, won = false;
     count = [9,9,9,9,9,9,9,9,9];
     timer.innerHTML = '0s';
-    puzzle = sudokuGrid;
-    solution = sudokuGrid;
+    solution = JSON.parse(JSON.stringify(sudokuGrid));;
+    puzzle = JSON.parse(JSON.stringify(sudokuGrid));
     // getData();
     resetData();
     countNumbers();
     resetRemain();
     clickBtn();
-    console.log(puzzle)
+    // console.log(puzzle)
     tds.forEach((td) => {
         td.classList.remove('wrong');
         td.classList.remove('blue');
     });
-    // focus get on the window without starting the timer
     window.focus();
 });
 
@@ -407,15 +407,13 @@ nextbtn.addEventListener('click', () => {
 validatebtn.addEventListener('click', () => {
     if(!validate) {
         tds.forEach((td) => {
-            if(td.classList.contains('fixed') == false){
+            if(!td.classList.contains('fixed')){
+                let value = td.innerText;
                 let index = td.getAttribute('value');
                 index = parseInt(index);
                 let row = Math.floor(index / 9);
                 let col = index % 9;
-                let value = parseInt(td.innerText);
-                // if(value)
-                //     td.innerText = solution[row][col];
-                if(value && value != solution[row][col]) {
+                if(value && value != solution[row][col]) { 
                     td.classList.add('wrong');
                 }
                 else {
