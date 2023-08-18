@@ -161,12 +161,12 @@ button:hover {
     position: relative;
     padding: 0;
     width: 60px;
+    font-size: 1.7rem;
     aspect-ratio: 1/1;
     line-height: 1;
-    font-size: 2rem;
 }
 
-#reset:hover:after {
+:is(#reset,#next,#validate):hover:after {
     content: '';
     position: absolute;
     top: 0;
@@ -179,7 +179,7 @@ button:hover {
 }
 
 #validate{
-    font-size: 1.8rem;
+    font-size: 1.4rem;
 }
 
 #timer{
@@ -204,7 +204,7 @@ button:hover {
     #buttons {
         width: 90%;
     }
-    button, #reset {
+    button {
         width: 50px;
         height: 50px;
         font-size: 16px;

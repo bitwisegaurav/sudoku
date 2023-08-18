@@ -41,16 +41,18 @@ getSudoku();
 function getSudoku(){
     let noOfFilledCells = Math.floor(Math.random() * 50) + 20;
     let count = 0;
-    while(count < noOfFilledCells){
-        let randomRow = Math.floor(Math.random() * 9);
-        let randomCol = Math.floor(Math.random() * 9);
-        if(sudokuGrid[randomRow][randomCol] !== 0){
-            sudokuGrid[randomRow][randomCol] = 0;
-            count++;
+    if(sudokuGrid && sudokuGrid.length > 0){
+        solution = sudokuGrid;
+        while(count < noOfFilledCells){
+            let randomRow = Math.floor(Math.random() * 9);
+            let randomCol = Math.floor(Math.random() * 9);
+            if(sudokuGrid[randomRow][randomCol] !== 0){
+                sudokuGrid[randomRow][randomCol] = 0;
+                count++;
+            }
         }
+        puzzle = sudokuGrid;
     }
-    // puzzle = sudokuGrid;
-    // solution = sudokuGrid;
 
     getData();
 }
@@ -169,11 +171,13 @@ Array.from(tds).forEach((td) => {
                 selectedValue = td.innerText;
                 selectedValue = parseInt(selectedValue);
                 findNumbers();
+                clickBtn();
             }
             else {
                 selectedValue = 0;
                 // console.log(selectedValue);
                 findNumbers();
+                clickBtn();
             }
         }
         else if(td.innerText != '' && td.classList.contains('fixed') == false){
@@ -204,6 +208,7 @@ Array.from(tds).forEach((td) => {
                 selectedValue = td.innerText;
                 selectedValue = parseInt(selectedValue);
                 findNumbers();
+                clickBtn();
             }
 
             else {
@@ -221,6 +226,7 @@ Array.from(tds).forEach((td) => {
                 }
                 // console.log(selectedValue);
                 findNumbers();
+                clickBtn();
             }
         }
         if(checkPuzzle()){
@@ -264,6 +270,20 @@ Array.from(btns).forEach((btn) => {
 
     });
 });
+
+function clickBtn(){
+    // clicked the selectedvalue button
+    btns.forEach((btn) => {
+        let value = btn.getAttribute('value');
+        value = parseInt(value);
+        if(value == selectedValue && selectedValue != 0) {
+            btn.classList.add('clicked');
+        }
+        else {
+            btn.classList.remove('clicked');
+        }
+    });
+}
 
 function findNumbers() {
     tds.forEach((td) => {
@@ -337,25 +357,45 @@ function countNumbers(){
     }
 }
 
+// reset the data
+function resetData(){
+    tds.forEach((td) => {
+        if(td.classList.contains('fixed') == false){
+            let index = td.getAttribute('value');
+            index = parseInt(index);
+            let row = Math.floor(index / 9);
+            let col = index % 9;
+            puzzle[row][col] = 0;
+            td.innerText = '';
+        }
+    });
+}
+
+function resetRemain(){
+    for(let i = 0; i < 9; i++){
+        remain[i].innerHTML = count[i];
+    }
+}
+
 // on clicking the reset button the puzzle will be reset
 reset.addEventListener('click', () => {
     validate = false, selectedValue = 0, time = 0, flag = false, won = false;
     count = [9,9,9,9,9,9,9,9,9];
     timer.innerHTML = '0s';
-    puzzle = [];
-    tds.forEach((td) => {
-        td.innerText = '';
-        td.classList.remove('fixed');
-    });
-    // puzzle = sudokuGrid;
-    // solution = sudokuGrid;
-    getData();
-    console.log(puzzle)
+    puzzle = sudokuGrid;
+    solution = sudokuGrid;
+    // getData();
+    resetData();
     countNumbers();
+    resetRemain();
+    clickBtn();
+    console.log(puzzle)
     tds.forEach((td) => {
         td.classList.remove('wrong');
         td.classList.remove('blue');
     });
+    // focus get on the window without starting the timer
+    window.focus();
 });
 
 nextbtn.addEventListener('click', () => {
